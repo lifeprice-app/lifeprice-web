@@ -266,7 +266,7 @@
             <div class="text-4xl font-mono font-bold neon-number life-hours" data-price="38990">1559.6</div>
             <div class="text-slate-400 uppercase text-xs">HOURS</div>
           </div>
-          <div class="mt-4">
+          <div class="mt-4 space-y-3">
             <a href="#" 
                class="open-source inline-block mt-2 w-full text-center rounded-xl py-3 bg-white text-black font-semibold"
                data-name="Tesla Model 3"
@@ -275,6 +275,13 @@
                data-affiliate="YOUR_AFFILIATE_LINK_HERE">
                Source →
             </a>
+
+            <button class="add-to-cart-btn w-full rounded-xl py-3 bg-teal-500 text-black font-semibold hover:bg-teal-600 transition"
+                    data-name="Tesla Model 3"
+                    data-price="38990"
+                    data-id="product-tesla-model-3">
+              Add to Life-Hours Cart
+            </button>
           </div>
         </div>
       </article>
@@ -292,15 +299,22 @@
             <div class="text-4xl font-mono font-bold neon-number life-hours" data-price="1895.00">42.5</div>
             <div class="text-slate-400 uppercase text-xs">HOURS</div>
           </div>
-          <div class="mt-4">
+          <div class="mt-4 space-y-3">
             <a href="#"
                class="open-source inline-block mt-2 w-full text-center rounded-xl py-3 bg-white/5 border border-white/10 text-white font-semibold"
                data-name="iPhone 17 Pro Max"
                data-price="1895.00"
                data-image="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?q=80&w=1200&auto=format&fit=crop"
-               data-affiliate=https://amzn.to/3OYZN27>
+               data-affiliate="https://amzn.to/3OYZN27">
               Source →
             </a>
+
+            <button class="add-to-cart-btn w-full rounded-xl py-3 bg-teal-500 text-black font-semibold hover:bg-teal-600 transition"
+                    data-name="iPhone 17 Pro Max"
+                    data-price="1895.00"
+                    data-id="product-iphone-17-pro-max">
+              Add to Life-Hours Cart
+            </button>
           </div>
         </div>
       </article>
@@ -318,7 +332,7 @@
             <div class="text-4xl font-mono font-bold neon-number life-hours" data-price="1825">73.0</div>
             <div class="text-slate-400 uppercase text-xs">HOURS / YR</div>
           </div>
-          <div class="mt-4">
+          <div class="mt-4 space-y-3">
             <a href="#"
                class="open-source inline-block mt-2 w-full text-center rounded-xl py-3 bg-white/5 border border-white/10 text-white font-semibold"
                data-name="Daily Latte"
@@ -327,6 +341,13 @@
                data-affiliate="YOUR_AFFILIATE_LINK_HERE">
               Source →
             </a>
+
+            <button class="add-to-cart-btn w-full rounded-xl py-3 bg-teal-500 text-black font-semibold hover:bg-teal-600 transition"
+                    data-name="Daily Latte"
+                    data-price="1825"
+                    data-id="product-daily-latte">
+              Add to Life-Hours Cart
+            </button>
           </div>
         </div>
       </article>
@@ -342,8 +363,12 @@
         <div class="flex-1">
           <h3 class="text-xl font-bold text-white">Netflix Premium</h3>
           <div class="text-2xl font-mono font-bold text-teal-400 life-hours" data-price="275.88">11.0</div>
-          <div class="mt-3">
+          <div class="mt-3 space-y-2">
             <a href="#" class="text-teal-400 text-sm font-bold hover:underline">Source →</a>
+            <button class="add-to-cart-btn text-black bg-teal-500 rounded-md px-3 py-2 font-semibold"
+                    data-name="Netflix Premium"
+                    data-price="275.88"
+                    data-id="product-netflix-premium">Add to Life-Hours Cart</button>
           </div>
         </div>
       </div>
@@ -356,8 +381,12 @@
         <div class="flex-1">
           <h3 class="text-xl font-bold text-white">Gym Membership</h3>
           <div class="text-2xl font-mono font-bold text-teal-400 life-hours" data-price="600">24.0</div>
-          <div class="mt-3">
+          <div class="mt-3 space-y-2">
             <a href="#" class="text-teal-400 text-sm font-bold hover:underline">Source →</a>
+            <button class="add-to-cart-btn text-black bg-teal-500 rounded-md px-3 py-2 font-semibold"
+                    data-name="Gym Membership"
+                    data-price="600"
+                    data-id="product-gym-membership">Add to Life-Hours Cart</button>
           </div>
         </div>
       </div>
@@ -393,21 +422,45 @@
     </aside>
   </div>
 
+  <!-- LIFE-HOURS CART SIDEBAR -->
+  <div id="lifeHoursCart" class="fixed top-0 right-0 h-full w-80 bg-gray-900 bg-opacity-95 shadow-lg transform translate-x-full transition-transform z-50 flex flex-col">
+    <div class="flex items-center justify-between p-4 border-b border-gray-700">
+      <h2 class="text-xl font-bold text-white">Life-Hours Cart</h2>
+      <button id="closeCartBtn" aria-label="Close cart" class="text-white text-2xl font-bold">&times;</button>
+    </div>
+    <div id="cartItems" class="flex-1 overflow-y-auto p-4 space-y-4 text-white"></div>
+    <div class="p-4 border-t border-gray-700">
+      <div class="flex justify-between text-lg font-semibold">
+        <span>Total Hours:</span>
+        <span id="totalHours">0</span>
+      </div>
+      <div class="mt-3 text-sm text-slate-400">Tip: Change your hourly wage above to update totals.</div>
+      <div class="mt-4">
+        <button id="clearCartBtn" class="w-full py-2 rounded bg-white/5 text-white hover:bg-white/10">Clear Cart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CART TOGGLE BUTTON -->
+  <button id="openCartBtn" aria-label="Open Life-Hours Cart" 
+    class="fixed bottom-6 right-6 bg-teal-500 text-black rounded-full p-4 shadow-lg hover:bg-teal-600 transition z-40">
+    🛒
+  </button>
+
   <!-- LOGIC SCRIPT -->
   <script>
-    // Calculation + Drawer logic + Waitlist handler
     (function(){
-      // --- Utilities ---
+      // Utilities
       function safeParseFloat(v){ const p = parseFloat(String(v).replace(/,/g,'')); return isNaN(p) ? 0 : p; }
 
-      // --- Calculator ---
+      // Elements
       const hourlyWageInput = document.getElementById('hourlyWage');
       const lifeHoursElements = document.querySelectorAll('.life-hours');
 
+      // Update life-hours shown on page
       function updateCalculations() {
         const wage = safeParseFloat(hourlyWageInput?.value);
         if (!wage || wage <= 0) {
-          // fallback display (uses 25 as preview)
           lifeHoursElements.forEach(el=>{
             const usd = safeParseFloat(el.getAttribute('data-price'));
             const val = usd ? (usd / 25).toFixed(1) : '--';
@@ -433,7 +486,7 @@
 
       if (hourlyWageInput) hourlyWageInput.addEventListener('input', updateCalculations);
 
-      // --- Drawer handlers ---
+      // Drawer handlers (Source →)
       const openButtons = document.querySelectorAll('.open-source');
       const drawer = document.getElementById('sourceDrawer');
       const drawerBackdrop = document.getElementById('drawerBackdrop');
@@ -463,7 +516,6 @@
             drawerCopy.textContent = 'Copied';
             setTimeout(()=> drawerCopy.textContent = prev, 1400);
           }).catch(()=> {
-            // fallback
             alert('Copy not available in this browser.');
           });
         };
@@ -495,9 +547,9 @@
       [drawerClose, drawerBackdrop].forEach(el => {
         if(el) el.addEventListener('click', closeDrawer);
       });
-      document.addEventListener('keydown', (e)=> { if(e.key === 'Escape') closeDrawer(); });
+      document.addEventListener('keydown', (e)=> { if(e.key === 'Escape') { closeDrawer(); closeCart(); } });
 
-      // --- Waitlist Form (lightweight demo) ---
+      // Waitlist Form
       const waitlistForm = document.getElementById('waitlistForm');
       if (waitlistForm) {
         const wlMsg = document.getElementById('waitlistMsg');
@@ -519,8 +571,156 @@
         });
       }
 
-      // init
+      // --- Life-Hours Cart ---
+      const cartKey = 'lifeprice_cart_v1';
+      const cart = {}; // id -> { name, price, qty }
+      const cartSidebar = document.getElementById('lifeHoursCart');
+      const cartItemsContainer = document.getElementById('cartItems');
+      const totalHoursEl = document.getElementById('totalHours');
+      const openCartBtn = document.getElementById('openCartBtn');
+      const closeCartBtn = document.getElementById('closeCartBtn');
+      const clearCartBtn = document.getElementById('clearCartBtn');
+
+      function loadCart() {
+        try {
+          const saved = localStorage.getItem(cartKey);
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            Object.keys(parsed).forEach(k => cart[k] = parsed[k]);
+          }
+        } catch (e) { console.warn('Could not load cart', e); }
+      }
+
+      function saveCart() {
+        try {
+          localStorage.setItem(cartKey, JSON.stringify(cart));
+        } catch (e) { console.warn('Could not save cart', e); }
+      }
+
+      function calcHoursFromPrice(price) {
+        const wage = safeParseFloat(hourlyWageInput?.value) || 25;
+        return price / wage;
+      }
+
+      function renderCart() {
+        cartItemsContainer.innerHTML = '';
+        let total = 0;
+        Object.keys(cart).forEach(id => {
+          const item = cart[id];
+          const hours = calcHoursFromPrice(item.price) * item.qty;
+          total += hours;
+
+          const itemEl = document.createElement('div');
+          itemEl.className = 'flex justify-between items-center bg-gray-800 rounded p-3';
+          itemEl.innerHTML = `
+            <div>
+              <div class="font-semibold">${escapeHtml(item.name)}</div>
+              <div class="text-sm text-gray-400">${hours.toFixed(1)} hours (${item.qty}x)</div>
+            </div>
+            <div class="flex flex-col items-end gap-2">
+              <div class="text-sm text-gray-300">$${Number(item.price).toLocaleString()}</div>
+              <div class="flex gap-2">
+                <button class="decrease-btn px-2 py-1 bg-white/5 rounded text-sm" data-id="${id}">−</button>
+                <button class="increase-btn px-2 py-1 bg-white/5 rounded text-sm" data-id="${id}">+</button>
+                <button class="remove-btn text-red-400 font-bold text-xl leading-none" data-id="${id}" aria-label="Remove ${escapeHtml(item.name)}">&times;</button>
+              </div>
+            </div>
+          `;
+          cartItemsContainer.appendChild(itemEl);
+        });
+        totalHoursEl.textContent = total.toFixed(1);
+        attachCartListeners();
+      }
+
+      function attachCartListeners() {
+        cartItemsContainer.querySelectorAll('.remove-btn').forEach(btn => {
+          btn.onclick = () => {
+            const id = btn.dataset.id;
+            delete cart[id];
+            saveCart();
+            renderCart();
+          };
+        });
+        cartItemsContainer.querySelectorAll('.increase-btn').forEach(btn => {
+          btn.onclick = () => {
+            const id = btn.dataset.id;
+            cart[id].qty++;
+            saveCart();
+            renderCart();
+          };
+        });
+        cartItemsContainer.querySelectorAll('.decrease-btn').forEach(btn => {
+          btn.onclick = () => {
+            const id = btn.dataset.id;
+            cart[id].qty = Math.max(1, cart[id].qty - 1);
+            saveCart();
+            renderCart();
+          };
+        });
+      }
+
+      function addToCart(id, name, price) {
+        if (!id) id = 'p-' + Math.random().toString(36).slice(2,9);
+        if (cart[id]) cart[id].qty++;
+        else cart[id] = { name, price: parseFloat(price), qty: 1 };
+        saveCart();
+        renderCart();
+        openCart();
+      }
+
+      function clearCart() {
+        Object.keys(cart).forEach(k => delete cart[k]);
+        saveCart();
+        renderCart();
+      }
+
+      function openCart() {
+        cartSidebar.classList.remove('translate-x-full');
+      }
+      function closeCart() {
+        cartSidebar.classList.add('translate-x-full');
+      }
+
+      function escapeHtml(unsafe) {
+        return String(unsafe).replace(/[&<>"'`=\/]/g, function (s) {
+          return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;','/':'&#x2F;','`':'&#x60;','=':'&#x3D;'}[s];
+        });
+      }
+
+      // attach Add to Cart buttons
+      document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id || ('p-' + Math.random().toString(36).slice(2,9));
+          const name = btn.dataset.name || btn.getAttribute('aria-label') || 'Product';
+          const price = safeParseFloat(btn.dataset.price || btn.getAttribute('data-price') || 0);
+          addToCart(id, name, price);
+        });
+      });
+
+      openCartBtn.addEventListener('click', openCart);
+      closeCartBtn.addEventListener('click', closeCart);
+      clearCartBtn.addEventListener('click', () => {
+        if (confirm('Clear all items from your Life-Hours Cart?')) clearCart();
+      });
+
+      // update cart totals when wage changes
+      if (hourlyWageInput) hourlyWageInput.addEventListener('input', function(){
+        updateCalculations();
+        renderCart();
+      });
+
+      // initialize cart
+      loadCart();
+      renderCart();
+
+      // initialize calculations on page load
       updateCalculations();
+
+      // Simple accessibility: close cart/drawer on outside click (Escape handled above)
+      document.addEventListener('click', (e) => {
+        // keep the click handlers light — don't auto close while interacting
+      });
+
     })();
   </script>
 
