@@ -72,7 +72,7 @@
 
     input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-    /* Hidden Share Template Styling */
+    /* --- Updated Share template styling (spacing + card-style items) --- */
     #shareTemplate {
       position: absolute; left: -9999px; top: -9999px;
       width: 1080px; height: 1080px;
@@ -80,7 +80,63 @@
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       padding: 80px; color: white;
     }
-    .share-glow { position: absolute; width: 800px; height: 800px; background: radial-gradient(circle, rgba(20,184,166,0.15) 0%, transparent 70%); z-index: 0; }
+    .share-glow { position: absolute; width: 800px; height: 800px; background: radial-gradient(circle, rgba(20,184,166,0.15) 0%, transparent 70%); z-index: 1; }
+
+    /* wrapper to control spacing and z-index */
+    #shareTemplate .share-content {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Big total spacing and style */
+    #shareTotal {
+      margin-bottom: 48px; /* increased breathing room */
+      line-height: 0.9;
+      letter-spacing: -3px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* "HOURS OF WORK" label */
+    #shareTemplate .share-sub {
+      margin-bottom: 6px;
+      color: #cfeee8;
+      letter-spacing: 2px;
+    }
+
+    /* list area: constrained so it won't overlap the hero total */
+    #shareList {
+      width: 100%;
+      max-width: 880px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+      max-height: 340px;
+      overflow-y: auto;
+      padding: 8px 12px;
+      box-sizing: border-box;
+      align-self: center;
+    }
+
+    /* individual item cards */
+    .share-item {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+      padding: 12px 16px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #e6eef0;
+      box-shadow: 0 6px 20px rgba(2,6,23,0.6);
+      font-size: 26px;
+    }
 
     @media (min-width: 1024px){ .product-image-container{ height: 260px; } }
   </style>
@@ -274,15 +330,17 @@
   <!-- HIDDEN SHARE TEMPLATE (For Screenshot) -->
   <div id="shareTemplate">
     <div class="share-glow"></div>
-    <div class="relative z-10 text-center">
-      <div class="text-4xl font-bold tracking-tighter mb-12">LIFE<span class="text-teal-400">PRICE</span></div>
+    <div class="share-content">
+      <div class="text-4xl font-bold tracking-tighter mb-4">LIFE<span class="text-teal-400">PRICE</span></div>
       <div class="text-slate-400 uppercase tracking-widest text-xl mb-4">My Life-Hours Total</div>
-      <div id="shareTotal" class="text-[160px] font-mono font-bold text-teal-400 leading-none mb-8">0.0</div>
-      <div class="text-2xl text-slate-300 mb-16">HOURS OF WORK</div>
-      <div id="shareList" class="w-full max-w-2xl space-y-4 text-left">
-        <!-- Items injected here -->
+      <div id="shareTotal" class="text-[160px] font-mono font-bold text-teal-400 leading-none">0.0</div>
+      <div class="share-sub text-2xl text-slate-300">HOURS OF WORK</div>
+
+      <div id="shareList" aria-live="polite">
+        <!-- Items injected here as .share-item -->
       </div>
-      <div class="mt-20 text-slate-500 text-xl">Calculate your true cost at lifeprice.com</div>
+
+      <div class="mt-12 text-slate-500 text-xl">Calculate your true cost at lifeprice.com</div>
     </div>
   </div>
 
@@ -294,6 +352,11 @@
       const cart = {};
 
       function safeParseFloat(v){ const p = parseFloat(String(v).replace(/,/g,'')); return isNaN(p) ? 0 : p; }
+      function escapeHtml(unsafe) {
+        return String(unsafe).replace(/[&<>"'`=\/]/g, function (s) {
+          return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;','/':'&#x2F;','`':'&#x60;','=':'&#x3D;'}[s];
+        });
+      }
 
       function updateCalculations() {
         const wage = safeParseFloat(hourlyWageInput?.value) || 25;
@@ -319,59 +382,84 @@
           total += hours;
           const div = document.createElement('div');
           div.className = 'bg-white/5 p-3 rounded-lg flex justify-between items-center';
-          div.innerHTML = `<div><div class="font-bold">${item.name}</div><div class="text-xs text-slate-400">${hours.toFixed(1)} hrs</div></div>
-                           <button onclick="window.removeFromCart('${id}')" class="text-red-400">&times;</button>`;
+          div.innerHTML = `<div><div class="font-bold">${escapeHtml(item.name)}</div><div class="text-xs text-slate-400">${hours.toFixed(1)} hrs</div></div>
+                           <div class="flex gap-2 items-center">
+                             <button onclick="window.decreaseQty('${id}')" class="px-2 py-1 bg-white/5 rounded text-sm">−</button>
+                             <div class="text-sm">${item.qty}</div>
+                             <button onclick="window.increaseQty('${id}')" class="px-2 py-1 bg-white/5 rounded text-sm">+</button>
+                             <button onclick="window.removeFromCart('${id}')" class="text-red-400 text-lg font-bold">&times;</button>
+                           </div>`;
           container.appendChild(div);
         });
         totalEl.textContent = total.toFixed(1);
       }
 
       window.removeFromCart = (id) => { delete cart[id]; renderCart(); };
+      window.increaseQty = (id) => { if(cart[id]) { cart[id].qty++; renderCart(); } };
+      window.decreaseQty = (id) => { if(cart[id]) { cart[id].qty = Math.max(1, cart[id].qty - 1); renderCart(); } };
 
       document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
         btn.onclick = () => {
-          const id = btn.dataset.id;
-          cart[id] = { name: btn.dataset.name, price: parseFloat(btn.dataset.price), qty: 1 };
+          const id = btn.dataset.id || ('p-' + Math.random().toString(36).slice(2,9));
+          if (!cart[id]) cart[id] = { name: btn.dataset.name, price: parseFloat(btn.dataset.price), qty: 1 };
+          else cart[id].qty++;
           renderCart();
           document.getElementById('lifeHoursCart').classList.remove('translate-x-full');
         };
       });
 
-      // Share Logic
+      // Share Logic (builds card with padded items)
       document.getElementById('shareCartBtn').onclick = async () => {
         const btn = document.getElementById('shareCartBtn');
         btn.textContent = 'Generating...';
-        
+
         const wage = safeParseFloat(hourlyWageInput?.value) || 25;
         const shareTotal = document.getElementById('shareTotal');
         const shareList = document.getElementById('shareList');
         const template = document.getElementById('shareTemplate');
-        
+
         let total = 0;
         shareList.innerHTML = '';
         Object.keys(cart).forEach(id => {
           const item = cart[id];
           const hours = (item.price / wage) * item.qty;
           total += hours;
-          shareList.innerHTML += `<div class="flex justify-between border-b border-white/10 pb-2 text-2xl">
-            <span>${item.name}</span><span class="text-teal-400 font-mono">${hours.toFixed(1)} HRS</span>
-          </div>`;
+          shareList.innerHTML += `
+            <div class="share-item">
+              <div class="share-item-name">${escapeHtml(item.name)}</div>
+              <div class="share-item-hours text-teal-400 font-mono">${hours.toFixed(1)} HRS</div>
+            </div>
+          `;
         });
+
         shareTotal.textContent = total.toFixed(1);
 
-        // Capture
-        const canvas = await html2canvas(template, { backgroundColor: '#020617', scale: 2 });
-        const link = document.createElement('a');
-        link.download = `LifePrice-Total-${total.toFixed(0)}hrs.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        
-        btn.textContent = 'Generate Share Card';
+        // allow a tiny pause so DOM updates render correctly for html2canvas
+        await new Promise(r => setTimeout(r, 60));
+        try {
+          const canvas = await html2canvas(template, { backgroundColor: '#020617', scale: 2 });
+          const link = document.createElement('a');
+          link.download = `LifePrice-Total-${Math.round(total)}hrs.png`;
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        } catch (err) {
+          console.error('Share capture failed', err);
+          alert('Could not generate share image in this browser.');
+        } finally {
+          btn.textContent = 'Generate Share Card';
+        }
       };
 
       // UI Toggles
       document.getElementById('openCartBtn').onclick = () => document.getElementById('lifeHoursCart').classList.remove('translate-x-full');
       document.getElementById('closeCartBtn').onclick = () => document.getElementById('lifeHoursCart').classList.add('translate-x-full');
+      document.getElementById('clearCartBtn').onclick = () => {
+        if (confirm('Clear all items from your Life-Hours Cart?')) {
+          Object.keys(cart).forEach(k => delete cart[k]);
+          renderCart();
+        }
+      };
+
       document.getElementById('hourlyWage').oninput = updateCalculations;
       updateCalculations();
     })();
